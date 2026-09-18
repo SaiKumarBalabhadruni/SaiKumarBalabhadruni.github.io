@@ -1,1 +1,32 @@
-const typed=document.getElementById('typed'),clock=document.getElementById('clock');const cmd='cat /etc/profile | grep "mission"';let i=0;function type(){typed.textContent=cmd.slice(0,i++);if(i<=cmd.length)setTimeout(type,40)}type();function tick(){clock.textContent=new Date().toLocaleTimeString([],{hour12:false})}tick();setInterval(tick,1000);const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.style.opacity=1;e.target.style.transform='none';io.unobserve(e.target)}}),{threshold:.08});document.querySelectorAll('section:not(.hero),.terminal').forEach(e=>{e.style.opacity=0;e.style.transform='translateY(16px)';e.style.transition='opacity .65s ease,transform .65s ease';io.observe(e)});
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("visible");
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll(".reveal").forEach((el, i) => {
+  el.style.transitionDelay = `${Math.min(i * 45, 260)}ms`;
+  observer.observe(el);
+});
+
+const topbar = document.querySelector(".topbar");
+let lastY = 0;
+window.addEventListener("scroll", () => {
+  const y = window.scrollY;
+  if (y > 12) topbar.style.boxShadow = "0 12px 40px rgba(0,0,0,.22)";
+  else topbar.style.boxShadow = "none";
+  lastY = y;
+}, { passive: true });
+
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener("click", e => {
+    const target = document.querySelector(link.getAttribute("href"));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+});
